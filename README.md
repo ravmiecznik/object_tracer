@@ -1,0 +1,1 @@
+This is example of class for tracing of live of any object
