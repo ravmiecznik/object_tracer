@@ -19,7 +19,6 @@ using namespace std;
 class testclass{
 /*
  * object type to be used as an examle
- *
  */
 private:
 	int priv;
