@@ -34,6 +34,9 @@ public:
 	int priv_sum(int a){
 			return a+priv;
 	}
+	static void puts(const char* str){
+		cout << "dbg: " << str << endl;
+	}
 };
 
 testclass::testclass(int a, int b): priv(a), val(b){
@@ -80,6 +83,7 @@ private:
 public:
 	T& obj_handler;
 	exec_tracer(T&, const char*);
+	exec_tracer(T&, const char*, void (&print_func)(const char*));
 	~exec_tracer();
 };
 
@@ -91,13 +95,23 @@ uint16_t exec_tracer<T>::instance_id;
 
 template <class T>
 exec_tracer<T>::exec_tracer(T& obj, const char* n): obj_handler(obj){
-	//char addrress_str[10] = "0x";
-	//itoa((int)&obj_handler, addrress_str+2, 16);
 	strcpy(name, n);	//maybe default name coud be an address ?
 	instance_id++;		//instead of id maybe address of object can be applied
 	cout << object_tracer_welcome;
 	cout << "Started instance of " << name << "_" << instance_id;
 	cout << ", at address 0x" << hex << (int)&obj_handler << endl;
+}
+
+template <class T>
+exec_tracer<T>::exec_tracer(T& obj, const char* n, void (&print_func)(const char*)):obj_handler(obj){
+	strcpy(name, n);	//maybe default name coud be an address ?
+	instance_id++;		//instead of id maybe address of object can be applied
+	print_func(object_tracer_welcome);
+	print_func("Started instance of ");
+	print_func(name);
+	print_func("_");
+	//print_func(instance_id);
+	//cout << ", at address 0x" << hex << (int)&obj_handler << endl;
 }
 
 template <class T>
@@ -110,11 +124,14 @@ int sum(int a, int b){
 	return a+b;
 }
 
-int main(){
+void _puts(const char* str){
+	cout << "puts " << str << endl;
+}
 
+int main(){
 	testclass tc(3,4);
 	cout << "address " << &tc << endl;
-	exec_tracer<testclass> traced_class(tc, "tclass");
+	exec_tracer<testclass> traced_class(tc, "tclass", testclass::puts);
 
 	//cout << traced_class.obj_handler.priv_sum(5) << endl;
 	cout << tc.val << endl;
