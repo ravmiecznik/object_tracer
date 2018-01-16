@@ -75,10 +75,10 @@ class exec_tracer{
  */
 private:
 	static char object_tracer_welcome[];
-public:
-	T& obj_handler;
 	static uint16_t instance_id;
 	char name[10];
+public:
+	T& obj_handler;
 	exec_tracer(T&, const char*);
 	~exec_tracer();
 };
